@@ -1,0 +1,39 @@
+<div class="container">
+  <form [formGroup]="form">
+    <h1>Address Form</h1>
+    <p>Form with nested address component</p>
+    <mat-checkbox formControlName="accept">Accept</mat-checkbox>
+    <hls-address-autocomplete
+      [label]="'Address'"
+      [placeholder]="'Search for an address...'"
+      formControlName="address"
+    ></hls-address-autocomplete>
+    <mat-error *ngIf="form.get('address')?.touched && form.get('address')?.hasError('invalidSelection')">
+      Please select a valid address from the list
+    </mat-error>
+     <mat-error *ngIf="form.get('address')?.touched && form.get('address')?.hasError('required')">
+    Address is required
+  </mat-error>
+  </form>
+  <div>
+    <h2>Selected address:</h2>
+    <div class="grid">
+      <span>Formatted</span
+      ><span>{{address && address.formatted ? address.formatted : '--'}}</span>
+      <span>Street</span
+      ><span>{{address && address.street ? address.street : '--'}}</span>
+      <span>City</span
+      ><span>{{address && address.city ? address.city : '--'}}</span>
+      <span>State</span
+      ><span>{{address && address.state ? address.state : '--'}}</span>
+      <span>Country</span
+      ><span>{{address && address.country ? address.country: '--'}}</span>
+      <span>Postal Code</span
+      ><span>{{address && address.postcode ? address.postcode : '--'}}</span>
+      <span>Latitude</span
+      ><span>{{address && address.lat ? address.lat : '--'}}</span>
+      <span>Longitude</span
+      ><span>{{address && address.lon ? address.lon : '--'}}</span>
+    </div>
+  </div>
+</div>
