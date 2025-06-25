@@ -1,4 +1,4 @@
-import { Component, forwardRef, Inject, Injector, Input, OnInit, Optional, Self } from '@angular/core';
+import { Component, EventEmitter, forwardRef, Input, OnInit, Output } from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -6,7 +6,6 @@ import {
   FormsModule,
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
-  NgControl,
   ReactiveFormsModule,
   ValidationErrors,
 } from '@angular/forms';
@@ -57,11 +56,12 @@ export class AddressAutocompleteComponent
 {
   @Input() placeholder: string = 'Enter address...';
   @Input() label: string = 'Address';
+  @Output() addressSelected = new EventEmitter<Address>();
 
-  control: AbstractControl | null = null;
-  public ngControl: NgControl | null = null;
-
-  searchControl = new FormControl('');
+  searchControl = new FormControl(
+    '',
+    this.invalidSelectionValidator.bind(this)
+  );
 
   suggestions: Address[] = [];
 
@@ -70,16 +70,9 @@ export class AddressAutocompleteComponent
 
   private selectedAddress: Address | null = null;
 
-  constructor(private geoapifyAutocomplete: GeoapifyAutocomplete, private injector: Injector) {
-
-  }
+  constructor(private geoapifyAutocomplete: GeoapifyAutocomplete) {}
 
   ngOnInit() {
-        const ngControl = this.injector.get(NgControl, null);
-    if (ngControl) {
-      this.control = ngControl.control;
-      ngControl.valueAccessor = this;
-    }
     this.searchControl.valueChanges
       .pipe(
         debounceTime(300),
@@ -91,7 +84,6 @@ export class AddressAutocompleteComponent
           }
           this.loading = true;
           this.noResults = false;
-          this.onChange(value);
 
           return this.geoapifyAutocomplete.fetchSuggestions(value).pipe(
             catchError((error) => {
@@ -117,23 +109,27 @@ export class AddressAutocompleteComponent
     this.searchControl.setValue(address.formatted, { emitEvent: false });
     this.onChange(address);
     this.onTouched();
+    this.addressSelected.emit(address);
   }
 
-  onChange = (_: any) => {};
-  onTouched = () => {};
+  onChange!: (address: Address) => void;
+  onTouched!: () => void;
 
-  writeValue(value: Address): void {
+  writeValue(value: Address | null): void {
     if (value) {
       this.searchControl.setValue(value.formatted, { emitEvent: false });
       this.selectedAddress = value;
+    } else {
+      this.searchControl.setValue('', { emitEvent: false });
+      this.selectedAddress = null;
     }
   }
 
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: (address: Address) => void): void {
     this.onChange = fn;
   }
 
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 
@@ -141,23 +137,29 @@ export class AddressAutocompleteComponent
     isDisabled ? this.searchControl.disable() : this.searchControl.enable();
   }
 
-  validate(control: AbstractControl): ValidationErrors | null {
+  validate(): ValidationErrors | null {
+    return this.searchControl.errors;
+  }
+
+  private resetAutocompleteState() {
+    this.selectedAddress = null;
+    this.suggestions = [];
+    this.loading = false;
+    this.noResults = false;
+  }
+
+  private invalidSelectionValidator(
+    control: AbstractControl
+  ): ValidationErrors | null {
     if (!control.value || control.value === '') {
       return { required: true };
     }
     if (
       !this.selectedAddress ||
-      !control.value ||
-      this.selectedAddress.formatted !== (control.value as Address).formatted
+      this.selectedAddress.formatted !== control.value
     ) {
       return { invalidSelection: true };
     }
     return null;
-  }
-
-  private resetAutocompleteState() {
-    this.suggestions = [];
-    this.loading = false;
-    this.noResults = false;
   }
 }

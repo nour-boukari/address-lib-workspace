@@ -13,7 +13,8 @@
     #auto="matAutocomplete"
     (optionSelected)="onSelect($event.option.value)"
   >
-    <mat-option *ngIf="loading" disabled>
+    @if (loading) {
+    <mat-option disabled>
       <div class="loading">
         <mat-progress-spinner
           diameter="20"
@@ -22,12 +23,14 @@
         <span>Loading...</span>
       </div>
     </mat-option>
+    } @else {
     <mat-option *ngFor="let suggestion of suggestions" [value]="suggestion">
       {{ suggestion.formatted }}
     </mat-option>
-    <mat-option *ngIf="!loading && noResults" disabled>
+    <mat-option *ngIf="noResults" disabled>
       No address results found.
     </mat-option>
+    }
   </mat-autocomplete>
   <mat-error *ngIf="searchControl.hasError('required')">
     Address is required

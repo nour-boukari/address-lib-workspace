@@ -5,6 +5,4 @@ export interface Address {
   state: string;
   postcode: string;
   country: string;
-  lat: number;
-  lon: number;
 }

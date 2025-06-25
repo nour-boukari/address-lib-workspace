@@ -81,8 +81,6 @@ export class GeoapifyAutocomplete {
               state: address.state!,
               country: address.country,
               formatted: address.formatted,
-              lat: address.lat,
-              lon: address.lon,
             }))
         )
       );
