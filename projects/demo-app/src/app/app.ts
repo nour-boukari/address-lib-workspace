@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {
   AddressAutocompleteComponent,
   Address,
+  AddressForm,
 } from 'hls-address';
 
 import {
@@ -12,9 +13,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatCheckbox } from '@angular/material/checkbox';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { CommonModule } from '@angular/common';
-import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-root',
@@ -23,25 +22,33 @@ import { MatInputModule } from '@angular/material/input';
   imports: [
     CommonModule,
     AddressAutocompleteComponent,
+    AddressForm,
     FormsModule,
     ReactiveFormsModule,
-    MatCheckbox,
-    MatFormFieldModule,
-    MatInputModule,
+    MatCheckbox
   ]
 })
 export class App implements OnInit {
   protected title = 'demo-app';
-  form!: FormGroup;
+  form1!: FormGroup;
+  form2!: FormGroup;
 
   ngOnInit() {
-    this.form = new FormGroup({
+    this.form1 = new FormGroup({
       accept: new FormControl(false),
-      address: new FormControl<Address | null>({value: null, disabled: false}, Validators.required),
+      address: new FormControl<Address | null>({value: null, disabled: false}),
+    });
+    this.form2 = new FormGroup({
+      accept: new FormControl(false),
+      address: new FormControl<Address | null>({value: null, disabled: false}),
     });
   }
 
-  get address(): Address | null {
-    return this.form.get('address')?.value || null;
+  get address1(): Address | null {
+    return this.form1.get('address')?.value || null;
+  }
+
+  get address2(): Address | null {
+    return this.form2.get('address')?.value || null;
   }
 }
