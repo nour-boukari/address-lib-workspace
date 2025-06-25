@@ -1,19 +1,13 @@
 <div class="container">
   <form [formGroup]="form">
     <h1>Address Form</h1>
-    <p>Form with nested address component</p>
+    <p>Form with nested autocomplete address component</p>
     <mat-checkbox formControlName="accept">Accept</mat-checkbox>
     <hls-address-autocomplete
       [label]="'Address'"
       [placeholder]="'Search for an address...'"
       formControlName="address"
     ></hls-address-autocomplete>
-    <mat-error *ngIf="form.get('address')?.touched && form.get('address')?.hasError('invalidSelection')">
-      Please select a valid address from the list
-    </mat-error>
-     <mat-error *ngIf="form.get('address')?.touched && form.get('address')?.hasError('required')">
-    Address is required
-  </mat-error>
   </form>
   <div>
     <h2>Selected address:</h2>

@@ -1,6 +1,12 @@
-import { Component, EventEmitter, forwardRef, Input, OnInit, Output } from '@angular/core';
 import {
-  AbstractControl,
+  Component,
+  EventEmitter,
+  forwardRef,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
+import {
   ControlValueAccessor,
   FormControl,
   FormsModule,
@@ -8,6 +14,7 @@ import {
   NG_VALUE_ACCESSOR,
   ReactiveFormsModule,
   ValidationErrors,
+  ValidatorFn,
 } from '@angular/forms';
 import {
   catchError,
@@ -23,7 +30,8 @@ import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { autocompleteValidator } from '../../utils/validators/autocompleteValidator';
 
 @Component({
   selector: 'hls-address-autocomplete',
@@ -48,7 +56,7 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
     MatAutocompleteModule,
     FormsModule,
     ReactiveFormsModule,
-    MatProgressSpinner,
+    MatProgressSpinnerModule,
   ],
 })
 export class AddressAutocompleteComponent
@@ -58,10 +66,7 @@ export class AddressAutocompleteComponent
   @Input() label: string = 'Address';
   @Output() addressSelected = new EventEmitter<Address>();
 
-  searchControl = new FormControl(
-    '',
-    this.invalidSelectionValidator.bind(this)
-  );
+  searchControl = new FormControl('', this.autocompleteValidator());
 
   suggestions: Address[] = [];
 
@@ -107,6 +112,7 @@ export class AddressAutocompleteComponent
   onSelect(address: Address) {
     this.selectedAddress = address;
     this.searchControl.setValue(address.formatted, { emitEvent: false });
+    this.searchControl.updateValueAndValidity();
     this.onChange(address);
     this.onTouched();
     this.addressSelected.emit(address);
@@ -148,18 +154,7 @@ export class AddressAutocompleteComponent
     this.noResults = false;
   }
 
-  private invalidSelectionValidator(
-    control: AbstractControl
-  ): ValidationErrors | null {
-    if (!control.value || control.value === '') {
-      return { required: true };
-    }
-    if (
-      !this.selectedAddress ||
-      this.selectedAddress.formatted !== control.value
-    ) {
-      return { invalidSelection: true };
-    }
-    return null;
+  private autocompleteValidator(): ValidatorFn {
+    return autocompleteValidator(() => this.selectedAddress);
   }
 }

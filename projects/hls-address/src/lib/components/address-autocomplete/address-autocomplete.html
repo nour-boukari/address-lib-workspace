@@ -35,6 +35,9 @@
   <mat-error *ngIf="searchControl.hasError('required')">
     Address is required
   </mat-error>
+  <mat-error *ngIf="searchControl.hasError('minlength')">
+    Please enter at least {{ searchControl.getError('minlength').requiredLength }} characters
+  </mat-error>
   <mat-error *ngIf="searchControl.hasError('invalidSelection')">
     Please select a valid address from the list
   </mat-error>
