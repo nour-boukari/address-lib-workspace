@@ -31,7 +31,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { autocompleteValidator } from '../../utils/validators/autocompleteValidator';
+import { autocompleteValidator } from '../../utils/validators/autocomplete-validator/autocomplete-validator';
 
 @Component({
   selector: 'hls-address-autocomplete',
@@ -118,8 +118,8 @@ export class AddressAutocompleteComponent
     this.addressSelected.emit(address);
   }
 
-  onChange!: (address: Address) => void;
-  onTouched!: () => void;
+  onChange = (_: Address) => {};
+  onTouched = () => {};
 
   writeValue(value: Address | null): void {
     if (value) {

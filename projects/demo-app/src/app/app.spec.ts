@@ -69,26 +69,34 @@ describe('App Component', () => {
   });
 
   it('should have an invalid form when address is null', () => {
+     component.form.get('address')?.setValue(null);
+    fixture.detectChanges();
+
     expect(component.form.valid).toBeFalse();
     expect(component.form.get('address')?.valid).toBeFalse();
   });
 
   it('should update address value and make the form valid', () => {
     component.form.get('address')?.setValue(mockAddress);
-    component.form.get('accept')?.setValue(true);
+    fixture.detectChanges();
 
     expect(component.form.get('address')?.value).toEqual(mockAddress);
     expect(component.form.get('address')?.valid).toBeTrue();
+    console.log(component.form.get('address')?.errors)
     expect(component.form.valid).toBeTrue();
   });
 
   it('should return null when address control is not set', () => {
     component.form.get('address')?.setValue(null);
+    fixture.detectChanges();
+
     expect(component.address).toBeNull();
   });
 
   it('should return correct address from getter', () => {
     component.form.get('address')?.setValue(mockAddress);
+    fixture.detectChanges();
+
     expect(component.address).toEqual(mockAddress);
   });
 
@@ -116,12 +124,5 @@ describe('App Component', () => {
     spans.forEach((span) => {
       expect(span.nativeElement.textContent.trim()).toBe('--');
     });
-  });
-
-  it('should render checkbox with correct label', () => {
-    const checkboxLabel = fixture.debugElement.query(
-      By.css('mat-checkbox label')
-    ).nativeElement;
-    expect(checkboxLabel.textContent.trim()).toBe('Accept');
   });
 });

@@ -1,5 +1,5 @@
 import { ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
-import { Address } from '../../types/models/address.model';
+import { Address } from '../../../types/models/address.model';
 
 export function autocompleteValidator(
   selectedAddressGetter: () => Address | null
