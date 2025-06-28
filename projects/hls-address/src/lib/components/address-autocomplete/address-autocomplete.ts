@@ -1,7 +1,9 @@
 import {
   Component,
+  DestroyRef,
   EventEmitter,
   forwardRef,
+  inject,
   Input,
   OnInit,
   Output,
@@ -32,6 +34,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { autocompleteValidator } from '../../utils/validators/autocomplete-validator/autocomplete-validator';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'hls-address-autocomplete',
@@ -74,6 +77,7 @@ export class AddressAutocompleteComponent
   noResults = false;
 
   private selectedAddress: Address | null = null;
+  private destroyRef = inject(DestroyRef);
 
   constructor(private geoapifyAutocomplete: GeoapifyAutocomplete) {}
 
@@ -97,7 +101,8 @@ export class AddressAutocompleteComponent
               return of(null);
             })
           );
-        })
+        }),
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe((results) => {
         this.loading = false;
