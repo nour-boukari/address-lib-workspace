@@ -1,59 +1,67 @@
 # AddressLibWorkspace
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.0.2.
+This is an Angular workspace containing:
 
-## Development server
+- **`hls-address`**: A reusable Angular Material address autocomplete component powered by the [Geoapify API](https://www.geoapify.com/).
+- **`demo-app`**: A demo application showcasing the `hls-address` component.
 
-To start a local development server, run:
+---
 
-```bash
-ng serve
-```
+## Setup
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+### 1. Install Dependencies
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+From the root of the workspace, run:
 
 ```bash
-ng generate component component-name
+npm install
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### 2. Build the Library
+build the `hls-address` library:
 
 ```bash
-ng generate --help
+ng build hls-address
 ```
 
-## Building
+> You can also run the library in `watch mode` to automatically rebuild on changes:
+>
+> ```bash
+> ng build hls-address --watch
+> ```
+>
+> Keep this running while making changes to the address library. Then serve the demo app to preview your updates live.
 
-To build the project run:
+### 3. Add Geoapify API Key
+The demo app requires a Geoapify API key. Create the following file:
+
+```swift
+projects/demo-app/src/environments/environment.ts
+```
+Add this content:
+
+```ts
+export const environment = {
+  apiKey: 'your_geoapify_api_key'
+};
+```
+
+### 3. Serve the Demo App
+To run the demo app locally:
 
 ```bash
-ng build
+ng serve demo-app -o
 ```
+This will open the demo application in your browser.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+## Testing
+### Test the Library
 
 ```bash
-ng test
+ng test hls-address
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
+### Test the Demo App
 ```bash
-ng e2e
+ng test demo-app
 ```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
