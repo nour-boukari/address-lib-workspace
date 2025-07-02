@@ -6,7 +6,6 @@ import {
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
-  Validators,
 } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 
@@ -28,13 +27,7 @@ export class App implements OnInit {
   ngOnInit() {
     this.form = new FormGroup({
       accept: new FormControl(false),
-      address: new FormControl<Address | null>(
-        {
-          value: null,
-          disabled: false,
-        },
-        Validators.required
-      ),
+      address: new FormControl<Address | null>(null),
     });
   }
 

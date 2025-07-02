@@ -82,7 +82,6 @@ describe('App Component', () => {
 
     expect(component.form.get('address')?.value).toEqual(mockAddress);
     expect(component.form.get('address')?.valid).toBeTrue();
-    console.log(component.form.get('address')?.errors)
     expect(component.form.valid).toBeTrue();
   });
 
