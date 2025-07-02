@@ -9,6 +9,7 @@ import {
 } from '../types/models/geoapify';
 import { ADDRESS_AUTOCOMPLETE_CONFIG } from '../config/address-autocomplete-config';
 import { AddressAutocompleteConfig } from '../types/models/address-autocomplete-config.model';
+import { validateGeoapifyAutocompleteConfig } from '../utils/validators/geoapify-autocomplete-config-validator/geoapify-autocomplete-config-validator';
 
 @Injectable({
   providedIn: 'root',
@@ -24,9 +25,7 @@ export class GeoapifyAutocomplete {
     @Inject(ADDRESS_AUTOCOMPLETE_CONFIG)
     config: AddressAutocompleteConfig
   ) {
-    if (!config?.apiKey) {
-      throw new Error('Geoapify API key is required in config.');
-    }
+    validateGeoapifyAutocompleteConfig(config);
 
     this.apiKey = config.apiKey;
     this.defaultOptions = {
