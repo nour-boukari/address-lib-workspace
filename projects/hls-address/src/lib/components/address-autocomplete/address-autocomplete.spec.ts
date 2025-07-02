@@ -107,12 +107,14 @@ describe('AddressAutocompleteComponent', () => {
     it('should call writeValue correctly', () => {
       component.writeValue(mockAddress);
       expect(component.searchControl.value).toBe(mockAddress.formatted);
+      expect(component.selectedAddress).toEqual(mockAddress);
     });
 
     it('should clear value on null writeValue', () => {
       component.writeValue(mockAddress);
       component.writeValue(null);
       expect(component.searchControl.value).toBe('');
+      expect(component.selectedAddress).toBeNull();
     });
 
     it('should register onChange callback', () => {

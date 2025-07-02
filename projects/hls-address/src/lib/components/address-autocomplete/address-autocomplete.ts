@@ -29,7 +29,7 @@ import { of } from 'rxjs';
 import { Address } from './../../types/models/address.model';
 import { GeoapifyAutocomplete } from '../../services/geoapify-autocomplete';
 import { CommonModule } from '@angular/common';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatFormFieldAppearance, MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -67,6 +67,7 @@ export class AddressAutocompleteComponent
 {
   @Input() placeholder: string = 'Enter address...';
   @Input() label: string = 'Address';
+  @Input() appearance: MatFormFieldAppearance = 'outline';
   @Output() addressSelected = new EventEmitter<Address>();
 
   searchControl = new FormControl('', this.autocompleteValidator());
@@ -76,7 +77,7 @@ export class AddressAutocompleteComponent
   loading = false;
   noResults = false;
 
-  private selectedAddress: Address | null = null;
+  selectedAddress: Address | null = null;
   private destroyRef = inject(DestroyRef);
 
   constructor(private geoapifyAutocomplete: GeoapifyAutocomplete) {}
@@ -117,7 +118,7 @@ export class AddressAutocompleteComponent
   onSelect(address: Address) {
     this.selectedAddress = address;
     this.searchControl.setValue(address.formatted, { emitEvent: false });
-    this.searchControl.updateValueAndValidity();
+    this.searchControl.updateValueAndValidity({ emitEvent: false });
     this.onChange(address);
     this.onTouched();
     this.addressSelected.emit(address);
@@ -128,12 +129,13 @@ export class AddressAutocompleteComponent
 
   writeValue(value: Address | null): void {
     if (value) {
-      this.searchControl.setValue(value.formatted, { emitEvent: false });
       this.selectedAddress = value;
+      this.searchControl.setValue(value.formatted, { emitEvent: false });
     } else {
-      this.searchControl.setValue('', { emitEvent: false });
       this.selectedAddress = null;
+      this.searchControl.setValue('', { emitEvent: false });
     }
+    this.searchControl.updateValueAndValidity({ emitEvent: false });
   }
 
   registerOnChange(fn: (address: Address) => void): void {

@@ -7,46 +7,44 @@ An Angular Material component for address autocomplete using the [Geoapify API](
 
 ---
 
-## 🚀 Development
+## Features
 
-### 🔧 Building
+- ✅ Angular 18+ support (standalone or module-based)
+- 🎨 Material Design UI with auto-complete
+- 🌍 Geoapify integration for location-based suggestions
+- 📦 Reactive Forms and standalone output support
 
-```bash
-ng build hls-address
-```
-Build artifacts will be placed in the dist/ directory.``
+---
 
-### 🧪 Testing
-```bash
-ng test
-```
-Runs unit tests using the Karma test runner.
+## Setup
 
-### 📦 Publishing
-Navigate to the build output:
-
-```bash
-cd dist/hls-address
-```
-
-Publish to npm:
-```bash
-npm publish
-```
-
-## 🔌 Usage Setup
-
-📥 Installation
+### 📥 Installation
 
 ```bash
 npm install hls-address
 ```
-⚠️ Requirements
-To properly use this library in your application, make sure to:
+### ⚠️ Requirements
 
-✅ Provide HttpClient using provideHttpClient() (Angular standalone app setup).
+To properly use this library in your Angular application, ensure the following:
 
-✅ Handle errors (e.g., API limits, network issues) from the Geoapify service using a global HttpInterceptor.
+- ✅ You're using **Angular 18 or higher**.
+- ✅ You've installed `@angular/material` and set up a theme (required for styling).
+- ✅ You handle errors from the Geoapify service (e.g., API limits, network failures) using a global `HttpInterceptor`.
+- ✅ You provide `HttpClient` using `provideHttpClient()`.
+
+> **⚠️ Note for Angular 18 users:**  
+> If you're using Angular 18 and encounter an animation error (e.g., `NG05105`), make sure to:
+>
+> - Import `BrowserAnimationsModule` in your `AppModule` (for module-based apps), or  
+> - Add `provideAnimations()` to your provider list (for standalone apps).
+>
+> This ensures compatibility with Angular Material animations like those used in autocomplete.
+
+---
+
+## Basic Implementation
+
+Provide the `ADDRESS_AUTOCOMPLETE_CONFIG` token with your Geoapify API key and optional configuration, either in your module or in `bootstrapApplication()` for standalone apps:
 
 ```ts
 import { provideHttpClient } from '@angular/common/http';
@@ -70,24 +68,98 @@ bootstrapApplication(AppComponent, {
 });
 ```
 
-### Basic Implementation
+### Importing the Component
+
+Import `AddressAutocompleteComponent` into your module or standalone component:
+
+```ts
+import { AddressAutocompleteComponent } from 'hls-address';
+```
+
+#### Module-based App
+
+```ts
+@NgModule({
+  imports: [
+    // ... other imports
+    AddressAutocompleteComponent
+  ]
+})
+export class YourModule {}
+```
+
+#### Standalone Component
+
+```ts
+@Component({
+  imports: [
+    // ... other imports
+    AddressAutocompleteComponent
+  ]
+})
+export class YourComponent {}
+```
+
+### Using with Reactive Forms (`formControlName`)
+Use the component with `FormControl<Address | null>` for full type safety.
+
+#### Component Class
+
+```ts
+import { Address } from 'hls-address';
+import { FormControl, FormGroup } from '@angular/forms';
+
+...
+
+this.form = new FormGroup({
+  address: new FormControl<Address | null>(null),
+});
+```
+
+#### Template
+
+```html
+<form [formGroup]="form">
+  <hls-address-autocomplete
+    [label]="'Address'"
+    [placeholder]="'Search for an address...'"
+    formControlName="address"
+  ></hls-address-autocomplete>
+</form>
+```
+
+### Without Reactive Forms (`onAddressSelected` Output)
+If you're not using Reactive Forms, you can handle address selections via the output event.
+
+#### Template
 
 ```html
 <hls-address-autocomplete
-   [label]="'Address'"
-   [placeholder]="'Search for an address...'"
-   formControlName="address"
+  [label]="'Address'"
+  [placeholder]="'Search for an address...'"
+  (onAddressSelected)="handleAddressSelection($event)"
 ></hls-address-autocomplete>
 ```
+#### Component Class
 
-### ✨ Features
-✅ Typeahead suggestions (3+ characters)
+```ts
+handleAddressSelection(address: Address) {
+  console.log('Selected address:', address);
+}
+```
 
-✅ Configurable API parameters
+### Notes:
+- You can use both `formControlName` and `onAddressSelected` at the same time.
+- To disable the address autocomplete field, use a disabled FormControl as follows:
 
-✅ Built-in validations
+```ts
+new FormControl({ value: null, disabled: true })
+```
+Do **not** use the `` [disabled] `` template binding.
 
-### ⚙️ Configuration Options
+---
+
+## ⚙️ Configuration Options
 
 | Parameter     | Type     | Default   | Description                                                                                     |
 |---------------|----------|-----------|-------------------------------------------------------------------------------------------------|
@@ -100,12 +172,20 @@ bootstrapApplication(AppComponent, {
 
 > 💡 **Note:** Refer to the [Geoapify Geocoding API documentation](https://apidocs.geoapify.com/) for updated usage details and advanced examples.
 
+---
 
-### 🧩 Component API
-Inputs
-Name	Type	Default
-label	string	'Address'
-placeholder	string	'Enter address...'
+## Component API
 
-Outputs
-addressSelected — Emits the complete selected Address object.
+### Inputs
+
+| Name          | Type                     | Default             | Description                                                                         |
+|---------------|--------------------------|---------------------|-------------------------------------------------------------------------------------|
+| `label`       | `string`                 | `'Address'`         | Label text displayed above the input field.                                         |
+| `placeholder` | `string`                 | `'Enter address...'`| Placeholder text inside the input.                                                  |
+| `appearance`  | `MatFormFieldAppearance` | `'outline'`         | Material appearance style: `'fill'` or `'outline'`.     |
+
+### Output
+
+| Name              | Type                    | Description                                                  |
+|-------------------|-------------------------|--------------------------------------------------------------|
+| `addressSelected` | `EventEmitter<Address>` | Emits the full selected address object when an option is chosen. |

@@ -1,12 +1,24 @@
 {
   "name": "hls-address",
-  "version": "0.0.1",
+  "version": "1.0.5",
   "peerDependencies": {
-    "@angular/common": "^20.0.0",
-    "@angular/core": "^20.0.0"
+    "@angular/common":  "^20.0.0 || ^19.0.0 || ^18.0.0",
+    "@angular/core": "^20.0.0 || ^19.0.0 || ^18.0.0",
+    "@angular/forms": "^20.0.0 || ^19.0.0 || ^18.0.0",
+    "@angular/material": "^20.0.0 || ^19.0.0 || ^18.0.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "keywords": [
+    "angular",
+    "address",
+    "autocomplete",
+    "geoapify",
+    "material",
+    "angular-material",
+    "address-input",
+    "form-control"
+  ]
 }
